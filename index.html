@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#121212" />
+<meta name="description" content="MetaMask Portfolio — track your wallet, tokens and activity." />
+
+<!-- ============================================================
+     EMBEDDED METAMASK LOGO — favicon (shows in the browser tab)
+     Inline SVG data URI, no external request needed.
+     ============================================================ -->
+<link rel="icon" type="image/svg+xml"
+  href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20200%20200'%3E%3Cpath%20fill='%23E2761B'%20d='M34,20L78,58L70,104L100,150L130,104L122,58L166,20L154,62L160,124L100,176L40,124L46,62Z'/%3E%3Cpath%20fill='%23E4761B'%20d='M46,62L78,58L122,58L154,62L160,124L100,176L40,124Z'/%3E%3Cpath%20fill='%23F6851B'%20d='M78,58L122,58L100,86Z'/%3E%3Cpath%20fill='%23C0AD9E'%20d='M78,132L122,132L100,172Z'/%3E%3Cpath%20fill='%23233447'%20d='M82,90L96,94L86,100Z'/%3E%3Cpath%20fill='%23233447'%20d='M118,90L104,94L114,100Z'/%3E%3Cpath%20fill='%23161616'%20d='M94,118L106,118L100,126Z'/%3E%3C/svg%3E" />
+
+<!-- Apple / iOS home-screen icon -->
+<link rel="apple-touch-icon"
+  href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20200%20200'%3E%3Crect%20width='200'%20height='200'%20rx='42'%20fill='%23121212'/%3E%3Cpath%20fill='%23E2761B'%20d='M34,20L78,58L70,104L100,150L130,104L122,58L166,20L154,62L160,124L100,176L40,124L46,62Z'/%3E%3Cpath%20fill='%23E4761B'%20d='M46,62L78,58L122,58L154,62L160,124L100,176L40,124Z'/%3E%3Cpath%20fill='%23F6851B'%20d='M78,58L122,58L100,86Z'/%3E%3Cpath%20fill='%23C0AD9E'%20d='M78,132L122,132L100,172Z'/%3E%3Cpath%20fill='%23233447'%20d='M82,90L96,94L86,100Z'/%3E%3Cpath%20fill='%23233447'%20d='M118,90L104,94L114,100Z'/%3E%3Cpath%20fill='%23161616'%20d='M94,118L106,118L100,126Z'/%3E%3C/svg%3E" />
+
+<title>MetaMask Portfolio</title>
+<style>
+/* ============================================================
+   THEME TOKENS — real portfolio.metamask.io palette
+   ============================================================ */
+:root{
+  --mm-blue:#0376C9;
+  --mm-blue-hover:#0369B4;
+  --mm-blue-soft:#E7F2FB;
+  --mm-orange:#F6851B;
+  --mm-green:#1FC16B;
+  --mm-red:#D73838;
+  --mm-yellow:#E6A700;
+
+  --bg:#121212;
+  --bg-elev:#1B1E20;
+  --card:#1F2326;
+  --card-2:#242A2E;
+  --card-hover:#2A3135;
+  --border:#2E353A;
+  --border-strong:#3A4348;
+  --divider:#262C30;
+
+  --text:#FFFFFF;
+  --text-2:#B7C0C7;
+  --text-3:#8A949B;
+  --text-inv:#0B0D0E;
+
+  --shadow:0 2px 8px rgba(0,0,0,.35);
+  --shadow-lg:0 8px 28px rgba(0,0,0,.45);
+  --radius:14px;
+  --radius-sm:10px;
+  --radius-lg:20px;
+  --nav-h:66px;
+  --header-h:60px;
+  --maxw:1120px;
+}
+html[data-theme="light"]{
+  --bg:#F5F6F8;
+  --bg-elev:#FFFFFF;
+  --card:#FFFFFF;
+  --card-2:#F2F4F7;
+  --card-hover:#EDF0F3;
+  --border:#E1E5EA;
+  --border-strong:#CDD4DB;
+  --divider:#EDF0F3;
+
+  --text:#0B0D0E;
+  --text-2:#4A545C;
+  --text-3:#6B767E;
+  --text-inv:#FFFFFF;
+
+  --shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.04);
+  --shadow-lg:0 8px 28px rgba(16,24,40,.12);
+  --mm-blue-soft:#E7F2FB;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;min-height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Euclid Circular B","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:-.1px;
+  overflow-x:hidden;
+  transition:background .2s ease,color .2s ease;
+  padding-bottom:calc(var(--nav-h) + 14px);
+}
+b,strong,.b{font-weight:800}
+button{font-family:inherit;font-weight:700;cursor:pointer;border:none;background:none;color:inherit}
+::-webkit-scrollbar{width:0;height:0}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.app-header{
+  position:sticky;top:0;z-index:60;
+  background:var(--bg-elev);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:saturate(180%) blur(12px);
+}
+.header-inner{
+  height:var(--header-h);
+  max-width:var(--maxw);
+  margin:0 auto;
+  display:flex;align-items:center;gap:10px;
+  padding:0 14px;
+}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+
+/* ---- embedded MetaMask fox logo (header) ---- */
+.mm-logo{
+  width:34px;height:34px;flex:0 0 auto;display:block;
+  filter:drop-shadow(0 2px 4px rgba(246,133,27,.32));
+  transition:transform .18s ease;
+}
+.brand:hover .mm-logo{transform:scale(1.06) rotate(-3deg)}
+html[data-theme="light"] .mm-logo{filter:drop-shadow(0 2px 4px rgba(246,133,27,.28))}
+
+.brand-text{display:flex;flex-direction:column;line-height:1.05;min-width:0}
+.brand-name{font-size:15.5px;font-weight:800;color:var(--text);white-space:nowrap;letter-spacing:-.3px}
+.brand-sub{font-size:9.5px;font-weight:800;color:var(--text-3);letter-spacing:.7px;text-transform:uppercase;white-space:nowrap}
+
+.header-spacer{flex:1}
+.addr-pill{
+  display:flex;align-items:center;gap:7px;
+  background:var(--card-2);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:6px 10px 6px 8px;
+  font-size:12px;font-weight:800;color:var(--text-2);
+  white-space:nowrap;
+}
+.addr-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--mm-green);box-shadow:0 0 0 3px rgba(31,193,107,.18)}
+.icon-btn{
+  width:36px;height:36px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--card-2);border:1px solid var(--border);
+  color:var(--text);flex:0 0 auto;
+}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn svg{width:18px;height:18px}
+.header-extra{display:none;gap:8px;align-items:center}
+
+/* ============================================================
+   PAGES
+   ============================================================ */
+.page{display:none;padding:14px;max-width:var(--maxw);margin:0 auto;animation:fade .22s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.page-title{font-size:24px;font-weight:800;margin:4px 0 14px;color:var(--text)}
+
+/* ============================================================
+   BALANCE CARD
+   ============================================================ */
+.balance-card{
+  position:relative;overflow:hidden;
+  background:linear-gradient(160deg,var(--card) 0%,var(--card-2) 100%);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:18px 18px 14px;
+  box-shadow:var(--shadow);
+  margin-bottom:12px;
+}
+.balance-card::after{
+  content:"";position:absolute;right:-60px;top:-70px;width:200px;height:200px;
+  border-radius:50%;background:radial-gradient(circle,rgba(3,118,201,.20),transparent 70%);
+  pointer-events:none;
+}
+.bal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.bal-label{font-size:12px;font-weight:800;color:var(--text-3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px}
+/* small fox watermark inside the balance card */
+.bal-fox{width:30px;height:30px;opacity:.9;flex:0 0 auto}
+.bal-value{font-size:38px;font-weight:800;line-height:1.05;color:var(--text);letter-spacing:-1.4px}
+.bal-value .cents{color:var(--text-2);font-size:26px}
+.bal-sub{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
+.chg-pill{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(31,193,107,.14);color:var(--mm-green);
+  border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800;
+}
+.chg-pill.neg{background:rgba(215,56,56,.14);color:var(--mm-red)}
+.bal-sub .muted{font-size:12px;color:var(--text-3);font-weight:700}
+
+.spread-strip{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;
+  padding-top:13px;border-top:1px solid var(--divider);
+}
+.spread-cell{text-align:left}
+.spread-cell .k{font-size:10.5px;color:var(--text-3);font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.spread-cell .v{font-size:14px;font-weight:800;color:var(--text);margin-top:3px;font-variant-numeric:tabular-nums}
+.spread-cell .v.up{color:var(--mm-green)}
+.spread-cell .v.dn{color:var(--mm-red)}
+
+/* ============================================================
+   ACTION ROW
+   ============================================================ */
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0 16px}
+.action{
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 4px;
+  color:var(--text);transition:background .15s ease,transform .1s ease;
+}
+.action:active{transform:scale(.96);background:var(--card-hover)}
+.action .ico{
+  width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--mm-blue-soft);
+}
+html[data-theme="dark"] .action .ico{background:rgba(3,118,201,.18)}
+.action .ico svg{width:17px;height:17px;stroke:var(--mm-blue);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.action span{font-size:11.5px;font-weight:800;color:var(--text-2)}
+
+.transact-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:9px;
+  background:var(--mm-blue);color:#fff;
+  border-radius:var(--radius);
+  padding:15px;font-size:15px;font-weight:800;
+  box-shadow:0 6px 18px rgba(3,118,201,.34);
+  margin-bottom:16px;transition:transform .1s ease,background .15s ease;
+}
+.transact-btn:active{transform:scale(.98);background:var(--mm-blue-hover)}
+.transact-btn svg{width:19px;height:19px;fill:none;stroke:#fff;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.transact-btn:disabled{opacity:.55;box-shadow:none;cursor:not-allowed}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:15px;margin-bottom:12px;box-shadow:var(--shadow);
+}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-title{font-size:15px;font-weight:800;color:var(--text)}
+.sec-link{font-size:12.5px;font-weight:800;color:var(--mm-blue)}
+
+.chart-wrap{position:relative;margin:-4px -4px 0}
+.chart-svg{width:100%;height:130px;display:block;overflow:visible}
+.chart-tip{
+  position:absolute;pointer-events:none;opacity:0;transition:opacity .12s;
+  background:var(--text-inv);color:var(--bg);
+  font-size:11px;font-weight:800;padding:4px 8px;border-radius:6px;white-space:nowrap;
+  transform:translate(-50%,-140%);
+}
+html[data-theme="light"] .chart-tip{background:#0B0D0E;color:#fff}
+.chart-range{display:flex;gap:6px;margin-top:10px}
+.range-btn{
+  flex:1;padding:7px 0;border-radius:8px;font-size:12px;font-weight:800;
+  color:var(--text-3);background:transparent;
+}
+.range-btn.on{background:var(--card-2);color:var(--text)}
+
+.asset-row{
+  display:flex;align-items:center;gap:11px;
+  padding:12px 4px;border-bottom:1px solid var(--divider);
+}
+.asset-row:last-child{border-bottom:none}
+.asset-logo{
+  width:38px;height:38px;border-radius:50%;flex:0 0 auto;
+  background:var(--card-2);display:grid;place-items:center;overflow:hidden;
+  border:1px solid var(--border);
+}
+.asset-logo img{width:100%;height:100%;object-fit:cover}
+.asset-logo svg{width:22px;height:22px}
+.asset-meta{flex:1;min-width:0}
+.asset-name{font-size:14px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.asset-tag{font-size:10px;font-weight:800;color:var(--text-3);background:var(--card-2);border-radius:4px;padding:1px 5px}
+.asset-sub{font-size:12px;color:var(--text-3);font-weight:700;margin-top:2px}
+.asset-val{text-align:right}
+.asset-val .a{font-size:14px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.asset-val .b2{font-size:12px;color:var(--text-3);font-weight:700;margin-top:2px}
+
+/* ============================================================
+   FOOTER NAV
+   ============================================================ */
+.footer-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;
+  background:var(--bg-elev);
+  border-top:1px solid var(--border);
+  padding-bottom:env(safe-area-inset-bottom);
+  backdrop-filter:saturate(180%) blur(14px);
+}
+.nav-scroll{
+  display:flex;align-items:stretch;gap:6px;
+  overflow-x:auto;overflow-y:hidden;
+  white-space:nowrap;
+  padding:8px 10px;
+  max-width:var(--maxw);margin:0 auto;
+  scrollbar-width:none;-ms-overflow-style:none;
+  -webkit-overflow-scrolling:touch;
+}
+.nav-scroll::-webkit-scrollbar{display:none}
+.nav-btn{
+  flex:0 0 auto;min-width:88px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:8px 14px;border-radius:12px;
+  color:var(--text-3);transition:background .15s ease,color .15s ease;
+}
+.nav-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn span{font-size:11.5px;font-weight:800;letter-spacing:-.1px}
+.nav-btn.on{color:var(--mm-blue);background:var(--mm-blue-soft)}
+html[data-theme="dark"] .nav-btn.on{background:rgba(3,118,201,.16)}
+.nav-btn:active{transform:scale(.95)}
+
+/* ============================================================
+   TRANSACTIONS
+   ============================================================ */
+.tx-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--radius);
+  margin-bottom:8px;transition:background .15s ease;
+}
+.tx-row:active{background:var(--card-hover)}
+.tx-ico{
+  width:40px;height:40px;border-radius:50%;flex:0 0 auto;
+  display:grid;place-items:center;background:var(--card-2);
+}
+.tx-ico svg{width:19px;height:19px;fill:none;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.tx-ico.in svg{stroke:var(--mm-green)}
+.tx-ico.out svg{stroke:var(--mm-red)}
+.tx-ico.fee svg{stroke:var(--mm-yellow)}
+.tx-body{flex:1;min-width:0}
+.tx-title{font-size:13.5px;font-weight:800;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx-date{font-size:11.5px;color:var(--text-3);font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx-amt{text-align:right;flex:0 0 auto}
+.tx-amt .n{font-size:13.5px;font-weight:800;font-variant-numeric:tabular-nums}
+.tx-amt .n.in{color:var(--mm-green)}
+.tx-amt .n.out{color:var(--mm-red)}
+.tx-amt .n.fee{color:var(--mm-yellow)}
+.tx-status{
+  font-size:10px;font-weight:800;border-radius:999px;padding:2px 7px;
+  display:inline-block;margin-top:4px;
+}
+.st-ok{background:rgba(31,193,107,.15);color:var(--mm-green)}
+.st-fail{background:rgba(215,56,56,.15);color:var(--mm-red)}
+.st-pend{background:rgba(230,167,0,.16);color:var(--mm-yellow)}
+
+/* ============================================================
+   SHEET
+   ============================================================ */
+.sheet-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:90;
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+.sheet-backdrop.on{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:100;
+  background:var(--bg-elev);
+  border-radius:22px 22px 0 0;
+  border-top:1px solid var(--border);
+  padding:8px 18px calc(24px + env(safe-area-inset-bottom));
+  max-height:88vh;overflow-y:auto;
+  transform:translateY(102%);transition:transform .28s cubic-bezier(.32,.72,0,1);
+  max-width:640px;margin:0 auto;
+}
+.sheet.on{transform:translateY(0)}
+.sheet-grip{width:42px;height:4px;border-radius:99px;background:var(--border-strong);margin:6px auto 16px}
+.sheet-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.sheet-head .big-ico{
+  width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:var(--card-2);
+}
+.sheet-head .big-ico svg{width:24px;height:24px;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.sheet-head h3{margin:0;font-size:17px;font-weight:800;color:var(--text)}
+.sheet-head p{margin:3px 0 0;font-size:12.5px;color:var(--text-3);font-weight:700}
+.detail-list{border-top:1px solid var(--divider)}
+.detail-row{
+  display:flex;justify-content:space-between;gap:16px;
+  padding:13px 0;border-bottom:1px solid var(--divider);
+}
+.detail-row .k{font-size:12.5px;color:var(--text-3);font-weight:800;flex:0 0 auto}
+.detail-row .v{
+  font-size:12.5px;font-weight:800;color:var(--text);text-align:right;
+  word-break:break-all;font-variant-numeric:tabular-nums;
+}
+.detail-row .v.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+.sheet-close{
+  width:100%;margin-top:20px;padding:14px;border-radius:var(--radius);
+  background:var(--card-2);color:var(--text);font-size:14px;font-weight:800;
+  border:1px solid var(--border);
+}
+.sheet-close:active{transform:scale(.98)}
+
+.sheet-actions{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.receive-btn{
+  flex:1 1 160px;display:flex;align-items:center;justify-content:center;gap:9px;
+  background:var(--mm-blue);color:#fff;
+  border-radius:var(--radius);padding:15px;font-size:14.5px;font-weight:800;
+  box-shadow:0 6px 18px rgba(3,118,201,.34);
+  transition:transform .1s ease,background .15s ease;
+}
+.receive-btn:active{transform:scale(.98);background:var(--mm-blue-hover)}
+.receive-btn svg{width:19px;height:19px;fill:none;stroke:#fff;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.outline-btn{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:7px;
+  background:transparent;color:var(--mm-blue);
+  border:1.5px solid var(--mm-blue);
+  border-radius:var(--radius);padding:15px 16px;font-size:13.5px;font-weight:800;
+}
+.outline-btn:active{transform:scale(.98);background:var(--mm-blue-soft)}
+html[data-theme="dark"] .outline-btn:active{background:rgba(3,118,201,.14)}
+.outline-btn svg{width:16px;height:16px;fill:none;stroke:var(--mm-blue);stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---- success hero ---- */
+.success-hero{text-align:center;padding:4px 0 18px}
+.success-hero .ring{
+  width:78px;height:78px;border-radius:50%;margin:0 auto 14px;
+  display:grid;place-items:center;background:rgba(31,193,107,.14);
+  box-shadow:0 0 0 8px rgba(31,193,107,.06);
+  animation:pop .42s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes pop{0%{transform:scale(.55);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.success-hero .ring svg{width:36px;height:36px;fill:none;stroke:var(--mm-green);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.success-hero .h1{
+  font-size:21px;font-weight:800;color:var(--mm-green);letter-spacing:-.4px;margin-bottom:8px;
+}
+.success-hero .amt{font-size:31px;font-weight:800;color:var(--text);letter-spacing:-1.2px;font-variant-numeric:tabular-nums}
+.success-hero .cap{font-size:12.5px;color:var(--text-3);font-weight:800;margin-top:6px}
+
+/* ============================================================
+   PENDING BANNER
+   ============================================================ */
+.pending-banner{
+  display:none;align-items:center;gap:13px;
+  background:linear-gradient(135deg,rgba(230,167,0,.14),rgba(3,118,201,.14));
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius);padding:14px;margin-bottom:12px;
+}
+.pending-banner.on{display:flex}
+.pb-ico{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:var(--bg-elev);flex:0 0 auto;
+}
+.pb-ico svg{width:21px;height:21px;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke:var(--mm-yellow)}
+.pb-body{flex:1;min-width:0}
+.pb-title{font-size:13.5px;font-weight:800;color:var(--text)}
+.pb-sub{font-size:11.5px;color:var(--text-3);font-weight:700;margin-top:2px}
+.pb-clock{
+  font-size:20px;font-weight:800;color:var(--text);
+  font-variant-numeric:tabular-nums;letter-spacing:-.5px;
+}
+.pb-clock small{display:block;font-size:9.5px;color:var(--text-3);letter-spacing:.6px;font-weight:800;text-align:right;margin-top:1px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1.6s linear infinite;transform-origin:center}
+
+/* ============================================================
+   EXPLORE / ACCOUNT
+   ============================================================ */
+.chip-scroll{
+  display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;
+  scrollbar-width:none;
+}
+.chip-scroll::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;padding:8px 15px;border-radius:999px;
+  background:var(--card);border:1px solid var(--border);
+  font-size:12.5px;font-weight:800;color:var(--text-2);white-space:nowrap;
+}
+.chip.on{background:var(--mm-blue);border-color:var(--mm-blue);color:#fff}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px;display:flex;flex-direction:column;gap:9px;
+}
+.mini-ico{
+  width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+  background:var(--mm-blue-soft);
+}
+html[data-theme="dark"] .mini-ico{background:rgba(3,118,201,.16)}
+.mini-ico svg{width:18px;height:18px;fill:none;stroke:var(--mm-blue);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.mini-card h4{margin:0;font-size:13.5px;font-weight:800;color:var(--text)}
+.mini-card p{margin:0;font-size:11.5px;color:var(--text-3);font-weight:700;line-height:1.45}
+
+.stat-line{
+  display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--divider);
+}
+.stat-line:last-child{border-bottom:none}
+.stat-line .k{font-size:12.5px;color:var(--text-3);font-weight:800}
+.stat-line .v{font-size:13px;font-weight:800;color:var(--text);text-align:right}
+
+.toast{
+  position:fixed;left:50%;bottom:calc(var(--nav-h) + 22px);transform:translate(-50%,20px);
+  background:var(--text-inv);color:var(--bg);
+  padding:11px 18px;border-radius:999px;font-size:12.5px;font-weight:800;
+  opacity:0;pointer-events:none;transition:all .25s ease;z-index:200;white-space:nowrap;
+  box-shadow:var(--shadow-lg);
+}
+html[data-theme="light"] .toast{background:#0B0D0E;color:#fff}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+.empty{text-align:center;padding:40px 20px;color:var(--text-3);font-weight:700;font-size:13px}
+
+/* ============================================================
+   RESPONSIVE — TABLET
+   ============================================================ */
+@media (min-width:640px){
+  .page{padding:18px}
+  .bal-value{font-size:44px}
+  .bal-value .cents{font-size:30px}
+  .tx-row{padding:14px}
+  .tx-title{font-size:14.5px}
+  .tx-amt .n{font-size:14.5px}
+  .nav-btn{min-width:110px}
+  .mm-logo{width:38px;height:38px}
+}
+
+/* ============================================================
+   RESPONSIVE — DESKTOP (all mobile components kept)
+   ============================================================ */
+@media (min-width:960px){
+  :root{--header-h:70px;--nav-h:74px}
+  body{padding-bottom:calc(var(--nav-h) + 24px)}
+
+  .page{padding:22px 20px 30px;max-width:var(--maxw)}
+  .page-title{font-size:28px;margin-bottom:18px}
+
+  .mm-logo{width:42px;height:42px}
+  .brand-name{font-size:17px}
+  .brand-sub{font-size:10px}
+  .bal-fox{width:36px;height:36px}
+
+  .home-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);
+    gap:16px;
+    align-items:start;
+  }
+  .col-main,.col-side{min-width:0;display:flex;flex-direction:column}
+  .col-main > *,.col-side > *{width:100%}
+
+  .balance-card{padding:24px 24px 18px;margin-bottom:14px}
+  .bal-value{font-size:52px;letter-spacing:-2px}
+  .bal-value .cents{font-size:34px}
+  .spread-strip{margin-top:18px;padding-top:16px}
+  .spread-cell .v{font-size:16px}
+
+  .actions{gap:11px;margin:14px 0 18px}
+  .action{padding:16px 6px;flex-direction:row;justify-content:center;gap:10px}
+  .action .ico{width:32px;height:32px}
+  .action span{font-size:13px}
+  .action:hover{background:var(--card-hover)}
+
+  .transact-btn{padding:16px;font-size:16px}
+  .transact-btn:hover{background:var(--mm-blue-hover)}
+
+  .card{padding:18px;margin-bottom:14px}
+  .sec-title{font-size:16px}
+  .chart-svg{height:170px}
+  .chart-range{gap:8px}
+  .range-btn{padding:9px 0;font-size:12.5px}
+  .range-btn:hover{background:var(--card-2);color:var(--text)}
+
+  .asset-row{padding:14px 6px}
+  .asset-row:hover{background:var(--card-hover);border-radius:10px}
+  .asset-logo{width:42px;height:42px}
+  .asset-name{font-size:15px}
+  .asset-val .a{font-size:15px}
+
+  .grid-2{grid-template-columns:repeat(4,1fr);gap:12px}
+  .mini-card{padding:18px}
+  .mini-card:hover{background:var(--card-hover)}
+
+  .account-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  .account-grid > .card{margin-bottom:0}
+
+  .tx-list-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tx-list-grid .tx-row{margin-bottom:0}
+  .tx-row:hover{background:var(--card-hover)}
+
+  .footer-nav{padding:0 0 env(safe-area-inset-bottom)}
+  .nav-scroll{justify-content:center;gap:10px;padding:10px 16px}
+  .nav-btn{min-width:120px;flex-direction:row;gap:9px;padding:10px 18px;border-radius:999px}
+  .nav-btn svg{width:19px;height:19px}
+  .nav-btn span{font-size:13px}
+  .nav-btn:hover{color:var(--mm-blue);background:var(--mm-blue-soft)}
+  html[data-theme="dark"] .nav-btn:hover{background:rgba(3,118,201,.12)}
+
+  .sheet{
+    left:50%;right:auto;bottom:auto;top:50%;
+    transform:translate(-50%,-46%) scale(.96);
+    opacity:0;pointer-events:none;
+    width:min(520px,92vw);
+    border-radius:20px;border:1px solid var(--border);
+    max-height:86vh;
+    padding:10px 22px 24px;
+    box-shadow:var(--shadow-lg);
+    transition:opacity .2s ease,transform .24s cubic-bezier(.32,.72,0,1);
+  }
+  .sheet.on{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
+  .sheet-grip{display:none}
+
+  .toast{bottom:96px}
+  .empty{padding:60px 20px}
+}
+
+@media (min-width:1200px){
+  .page{padding:28px 24px 40px}
+  .bal-value{font-size:58px}
+  .chart-svg{height:190px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================ HEADER ============================ -->
+<header class="app-header">
+  <div class="header-inner">
+
+    <!-- ============================================================
+         EMBEDDED METAMASK FOX LOGO (header)
+         Pure inline SVG — always renders, no network request.
+         ============================================================ -->
+    <div class="brand">
+      <svg class="mm-logo" viewBox="0 0 200 200" role="img" aria-label="MetaMask" xmlns="http://www.w3.org/2000/svg">
+        <!-- outer silhouette / ears -->
+        <path fill="#E2761B" d="M34,20 L78,58 L70,104 L100,150 L130,104 L122,58 L166,20 L154,62 L160,124 L100,176 L40,124 L46,62 Z"/>
+        <!-- face panel -->
+        <path fill="#E4761B" d="M46,62 L78,58 L122,58 L154,62 L160,124 L100,176 L40,124 Z"/>
+        <!-- inner ear accents -->
+        <path fill="#763D16" d="M78,58 L88,74 L70,68 Z"/>
+        <path fill="#763D16" d="M122,58 L112,74 L130,68 Z"/>
+        <!-- forehead wedge -->
+        <path fill="#F6851B" d="M78,58 L122,58 L100,88 Z"/>
+        <!-- muzzle -->
+        <path fill="#F6851B" d="M100,88 L112,116 L100,146 L88,116 Z"/>
+        <!-- chin / snout -->
+        <path fill="#C0AD9E" d="M78,132 L122,132 L100,172 Z"/>
+        <!-- eyes -->
+        <path fill="#233447" d="M82,90 L97,95 L86,101 Z"/>
+        <path fill="#233447" d="M118,90 L103,95 L114,101 Z"/>
+        <!-- nose -->
+        <path fill="#161616" d="M94,118 L106,118 L100,127 Z"/>
+      </svg>
+
+      <span class="brand-text">
+        <span class="brand-name">MetaMask</span>
+        <span class="brand-sub">Portfolio</span>
+      </span>
+    </div>
+
+    <nav class="header-extra" id="headerNav">
+      <button class="nav-btn on" data-page="home"><span>Home</span></button>
+      <button class="nav-btn" data-page="explore"><span>Explore</span></button>
+      <button class="nav-btn" data-page="account"><span>Account</span></button>
+      <button class="nav-btn" data-page="activities"><span>Activities</span></button>
+    </nav>
+
+    <div class="header-spacer"></div>
+
+    <button class="addr-pill" id="addrPill" title="Copy address">
+      <span class="dot"></span>
+      <span id="addrText">0xfe46…c373</span>
+    </button>
+    <button class="icon-btn" id="themeBtn" title="Toggle theme">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============================ HOME ============================ -->
+<section class="page active" id="page-home">
+  <div class="home-grid">
+
+    <div class="col-main">
+      <div class="balance-card">
+        <div class="bal-top">
+          <div>
+            <div class="bal-label">Total balance</div>
+            <div class="bal-value" id="balValue">$25,245<span class="cents">.78</span></div>
+          </div>
+          <!-- fox watermark inside the balance card -->
+          <svg class="bal-fox" viewBox="0 0 200 200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#E2761B" d="M34,20 L78,58 L70,104 L100,150 L130,104 L122,58 L166,20 L154,62 L160,124 L100,176 L40,124 L46,62 Z"/>
+            <path fill="#E4761B" d="M46,62 L78,58 L122,58 L154,62 L160,124 L100,176 L40,124 Z"/>
+            <path fill="#763D16" d="M78,58 L88,74 L70,68 Z"/>
+            <path fill="#763D16" d="M122,58 L112,74 L130,68 Z"/>
+            <path fill="#F6851B" d="M78,58 L122,58 L100,88 Z"/>
+            <path fill="#F6851B" d="M100,88 L112,116 L100,146 L88,116 Z"/>
+            <path fill="#C0AD9E" d="M78,132 L122,132 L100,172 Z"/>
+            <path fill="#233447" d="M82,90 L97,95 L86,101 Z"/>
+            <path fill="#233447" d="M118,90 L103,95 L114,101 Z"/>
+            <path fill="#161616" d="M94,118 L106,118 L100,127 Z"/>
+          </svg>
+        </div>
+
+        <div class="bal-sub">
+          <span class="chg-pill" id="chgPill">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"/></svg>
+            <span id="chgText">+0.00%</span>
+          </span>
+          <span class="muted" id="balFiat">≈ 25,245.78 USDT</span>
+        </div>
+
+        <div class="spread-strip">
+          <div class="spread-cell"><div class="k">Bid</div><div class="v" id="bidVal">—</div></div>
+          <div class="spread-cell"><div class="k">Ask</div><div class="v" id="askVal">—</div></div>
+          <div class="spread-cell"><div class="k">Spread</div><div class="v" id="spreadVal">—</div></div>
+        </div>
+      </div>
+
+      <div class="pending-banner" id="pendingBanner">
+        <div class="pb-ico">
+          <svg id="pbIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <div class="pb-body">
+          <div class="pb-title" id="pbTitle">Transaction processing</div>
+          <div class="pb-sub" id="pbSub">$25,245.78 USDT → outgoing</div>
+        </div>
+        <div class="pb-clock"><span id="pbClock">5:00:00</span><small id="pbLabel">REMAINING</small></div>
+      </div>
+
+      <div class="actions">
+        <button class="action" data-act="Send">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>
+          <span>Send</span>
+        </button>
+        <button class="action" data-act="Receive">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>
+          <span>Receive</span>
+        </button>
+        <button class="action" data-act="Swap">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M7 4v13"/><path d="M4 14l3 3 3-3"/><path d="M17 20V7"/><path d="M20 10l-3-3-3 3"/></svg></span>
+          <span>Swap</span>
+        </button>
+        <button class="action" data-act="Buy">
+          <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8"/><path d="M9 11h6"/></svg></span>
+          <span>Buy</span>
+        </button>
+      </div>
+
+      <button class="transact-btn" id="transactBtn">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        Transact
+      </button>
+
+      <div class="card">
+        <div class="sec-head">
+          <span class="sec-title">Portfolio value</span>
+          <span class="sec-link" id="chartDelta">—</span>
+        </div>
+        <div class="chart-wrap">
+          <svg class="chart-svg" id="chartSvg" preserveAspectRatio="none"></svg>
+          <div class="chart-tip" id="chartTip"></div>
+        </div>
+        <div class="chart-range" id="rangeBar">
+          <button class="range-btn" data-d="1">1D</button>
+          <button class="range-btn on" data-d="7">1W</button>
+          <button class="range-btn" data-d="30">1M</button>
+          <button class="range-btn" data-d="365">1Y</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-side">
+      <div class="card">
+        <div class="sec-head">
+          <span class="sec-title">Tokens</span>
+          <span class="sec-link">Manage</span>
+        </div>
+        <div id="assetList">
+          <div class="empty">Loading live balances…</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-head"><span class="sec-title">Networks</span></div>
+        <div class="asset-row">
+          <div class="asset-logo">
+            <svg viewBox="0 0 24 24" fill="#F6851B"><path d="M12 2l6 10-6 4-6-4 6-10zm0 15.2l6-3.6-6 8.4-6-8.4 6 3.6z"/></svg>
+          </div>
+          <div class="asset-meta">
+            <div class="asset-name">BNB Smart Chain <span class="asset-tag">BSC</span></div>
+            <div class="asset-sub">0.199 BNB · native gas</div>
+          </div>
+          <div class="asset-val"><div class="a" id="bnbVal">—</div><div class="b2">≈ live</div></div>
+        </div>
+        <div class="asset-row">
+          <div class="asset-logo">
+            <svg viewBox="0 0 24 24" fill="#627EEA"><path d="M12 2l6.5 10.8L12 16.5 5.5 12.8 12 2zm0 20l6.5-8.4L12 17.4 5.5 13.6 12 22z"/></svg>
+          </div>
+          <div class="asset-meta">
+            <div class="asset-name">Ethereum <span class="asset-tag">ERC-20</span></div>
+            <div class="asset-sub">USDT contract 0xdAC1…1ec7</div>
+          </div>
+          <div class="asset-val"><div class="a">—</div><div class="b2">not connected</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-head"><span class="sec-title">Live source</span></div>
+        <div class="stat-line"><span class="k">Provider</span><span class="v">CoinGecko API</span></div>
+        <div class="stat-line"><span class="k">Endpoint</span><span class="v" style="font-size:11px">/simple/token_price</span></div>
+        <div class="stat-line"><span class="k">Last sync</span><span class="v" id="lastSync">—</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================ EXPLORE ============================ -->
+<section class="page" id="page-explore">
+  <h1 class="page-title">Explore</h1>
+  <div class="chip-scroll">
+    <button class="chip on">All</button>
+    <button class="chip">DeFi</button>
+    <button class="chip">NFTs</button>
+    <button class="chip">Bridges</button>
+    <button class="chip">Swaps</button>
+  </div>
+  <div class="card" style="background:linear-gradient(135deg,rgba(3,118,201,.18),transparent);">
+    <div class="sec-title" style="margin-bottom:6px;">Discover dapps</div>
+    <div class="asset-sub" style="margin-bottom:14px;">Swap, stake and bridge across 20+ chains with MetaMask Portfolio.</div>
+    <button class="transact-btn" style="margin:0;padding:12px;font-size:13.5px;" data-act="Explore dapps">Open dapp directory</button>
+  </div>
+  <div class="grid-2">
+    <div class="mini-card">
+      <span class="mini-ico"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/></svg></span>
+      <h4>Bridge</h4><p>Move assets between chains in one flow.</p>
+    </div>
+    <div class="mini-card">
+      <span class="mini-ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 5v8l-8 5-8-5V8z"/></svg></span>
+      <h4>Stake</h4><p>Earn yield on ETH, MATIC and more.</p>
+    </div>
+    <div class="mini-card">
+      <span class="mini-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8"/></svg></span>
+      <h4>Buy crypto</h4><p>Fund your wallet with card or bank.</p>
+    </div>
+    <div class="mini-card">
+      <span class="mini-ico"><svg viewBox="0 0 24 24"><path d="M4 18l6-6 4 4 6-8"/></svg></span>
+      <h4>Analytics</h4><p>Track P&amp;L and portfolio performance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ACCOUNT ============================ -->
+<section class="page" id="page-account">
+  <h1 class="page-title">Account</h1>
+  <div class="account-grid">
+    <div class="card" style="text-align:center;padding:22px 15px;">
+      <div style="width:76px;height:76px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:var(--card-2);border:1px solid var(--border);">
+        <svg class="bal-fox" viewBox="0 0 200 200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="opacity:1">
+          <path fill="#E2761B" d="M34,20 L78,58 L70,104 L100,150 L130,104 L122,58 L166,20 L154,62 L160,124 L100,176 L40,124 L46,62 Z"/>
+          <path fill="#E4761B" d="M46,62 L78,58 L122,58 L154,62 L160,124 L100,176 L40,124 Z"/>
+          <path fill="#763D16" d="M78,58 L88,74 L70,68 Z"/>
+          <path fill="#763D16" d="M122,58 L112,74 L130,68 Z"/>
+          <path fill="#F6851B" d="M78,58 L122,58 L100,88 Z"/>
+          <path fill="#F6851B" d="M100,88 L112,116 L100,146 L88,116 Z"/>
+          <path fill="#C0AD9E" d="M78,132 L122,132 L100,172 Z"/>
+          <path fill="#233447" d="M82,90 L97,95 L86,101 Z"/>
+          <path fill="#233447" d="M118,90 L103,95 L114,101 Z"/>
+          <path fill="#161616" d="M94,118 L106,118 L100,127 Z"/>
+        </svg>
+      </div>
+      <div style="font-size:15px;font-weight:800;color:var(--text);">Imported Wallet</div>
+      <div style="font-size:12px;color:var(--text-3);font-weight:700;margin-top:5px;word-break:break-all;">
+        0xfe46bbfb161a724d8a9b77dbaf45d0da3b7ac373
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap;">
+        <button class="chip" id="copyAddr2">Copy</button>
+        <button class="chip" onclick="openBscScan()">BscScan</button>
+        <button class="chip" onclick="openMetaMask()">MetaMask</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-head"><span class="sec-title">Wallet stats</span></div>
+      <div class="stat-line"><span class="k">Net worth</span><span class="v" id="acctNet">$25,245.78</span></div>
+      <div class="stat-line"><span class="k">Assets</span><span class="v">USDT · BNB</span></div>
+      <div class="stat-line"><span class="k">Active network</span><span class="v">BNB Smart Chain</span></div>
+      <div class="stat-line"><span class="k">Server charges paid</span><span class="v">0.379 BNB</span></div>
+      <div class="stat-line"><span class="k">Failed sends</span><span class="v">5</span></div>
+    </div>
+
+    <div class="card">
+      <div class="sec-head"><span class="sec-title">Preferences</span></div>
+      <div class="stat-line" style="cursor:pointer" id="themeRow"><span class="k">Theme</span><span class="v" id="themeRowVal">Dark</span></div>
+      <div class="stat-line" style="cursor:pointer" data-act="Currency"><span class="k">Currency</span><span class="v">USD</span></div>
+      <div class="stat-line" style="cursor:pointer" data-act="Security"><span class="k">Security &amp; privacy</span><span class="v">›</span></div>
+      <div class="stat-line" style="cursor:pointer" id="resetRow"><span class="k">Reset demo state</span><span class="v" style="color:var(--mm-red)">Reset</span></div>
+    </div>
+
+    <div class="card">
+      <div class="sec-head"><span class="sec-title">Connected</span></div>
+      <div class="stat-line"><span class="k">Wallet</span><span class="v">0xfe46…c373</span></div>
+      <div class="stat-line"><span class="k">Chain ID</span><span class="v">56 (BSC)</span></div>
+      <div class="stat-line"><span class="k">Live balance</span><span class="v" id="acctLive">—</span></div>
+      <div class="stat-line"><span class="k">Price feed</span><span class="v" id="acctFeed">—</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ACTIVITIES ============================ -->
+<section class="page" id="page-activities">
+  <h1 class="page-title">Activities</h1>
+  <div class="chip-scroll">
+    <button class="chip on" data-f="all">All</button>
+    <button class="chip" data-f="in">Incoming</button>
+    <button class="chip" data-f="out">Outgoing</button>
+    <button class="chip" data-f="fee">Server charges</button>
+  </div>
+  <div id="txList"></div>
+</section>
+
+<!-- ============================ FOOTER NAV ============================ -->
+<nav class="footer-nav">
+  <div class="nav-scroll" id="navScroll">
+    <button class="nav-btn on" data-page="home">
+      <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" data-page="explore">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
+      <span>Explore</span>
+    </button>
+    <button class="nav-btn" data-page="account">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span>Account</span>
+    </button>
+    <button class="nav-btn" data-page="activities">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span>Activities</span>
+    </button>
+    <button class="nav-btn" data-page="account">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
+      <span>Settings</span>
+    </button>
+  </div>
+</nav>
+
+<div class="sheet-backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-grip"></div>
+  <div id="sheetContent"></div>
+  <button class="sheet-close" id="sheetClose">Close</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const COINGECKO_API = 'https://api.coingecko.com/api/v3';
+
+/* ---- CoinGecko public (Demo) API key ----------------------
+   Get a free key at https://www.coingecko.com/en/api
+   Sent as the `x-cg-demo-api-key` header on every call.
+   Leave the placeholder untouched to run keyless.
+------------------------------------------------------------- */
+const COINGECKO_API_KEY = 'CG-XXXXXXXXXXXXXXXXXXXXXXXX';
+
+const BSC_USDT_CONTRACT = '0x55d398326f99059ff775485246999027b3197955';
+const DEST_ADDRESS  = '0xfe46bbfb161a724d8a9b77dbaf45d0da3b7ac373';
+const COUNTDOWN_MS  = 5 * 60 * 60 * 1000;   // 5:00:00
+const BSCSCAN       = 'https://bscscan.com';
+const METAMASK_URL  = 'https://metamask.io';
+
+const LS = {
+  balance : 'mm_portfolio_balance',
+  pending : 'mm_pending_tx',
+  theme   : 'mm_theme',
+  history : 'mm_tx_history',
+  success : 'mm_last_success',
+  seen    : 'mm_success_seen'
+};
+const DEFAULT_BALANCE = 25245.78;
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const State = {
+  balance   : parseFloat(localStorage.getItem(LS.balance) ?? DEFAULT_BALANCE),
+  pending   : JSON.parse(localStorage.getItem(LS.pending) || 'null'),
+  livePrice : 1.0,
+  liveChange: 0,
+  usdtLogo  : null,
+  bnbPrice  : 0,
+  view      : 'home',
+  filter    : 'all',
+  extraTx   : JSON.parse(localStorage.getItem(LS.history) || '[]')
+};
+localStorage.setItem(LS.balance, State.balance);
+
+/* ============================================================
+   STATIC LEDGER
+   ============================================================ */
+const BASE_TX = [
+  { id:'t1', dir:'in',  kind:'Incoming BNB',        amt:'+0.18 BNB',    fiat:'$0.00',  date:'16 Sep 2026', ts:new Date('2026-09-16').getTime(), status:'ok',   hash:'0x9a12f4c0b7e83d15a2f6c9e04b71d8a35f0c2e6b9d47a18c3f5e0b2d6a94c781', from:DEST_ADDRESS, to:'0x8f2a…41c9', note:'Incoming transfer to wallet' },
+  { id:'t2', dir:'fee', kind:'Server liquidity charge', amt:'-0.18 BNB', fiat:'$0.00', date:'16 Sep 2026', ts:new Date('2026-09-16').getTime()+3600000, status:'ok', hash:'0x3c71ba90d2e4f6851a7c0b93e2d457f8a1c6b0e39d82f475a1c3e0b6d92748f5', from:'0x8f2a…41c9', to:'0xServer', note:'Liquidity server charge — enabled $25,245.78 USDT settlement' },
+  { id:'t3', dir:'out', kind:'Outgoing USDT',       amt:'-$25,245.78',  fiat:'$25,245.78', date:'18 Sep 2026', ts:new Date('2026-09-18').getTime(), status:'fail', hash:'0x7d2e91c3a0b64f857e1c0d92b3a4f6870e1c2b3a4d5e6f708192a3b4c5d6e7f8', from:'0xSelf', to:DEST_ADDRESS, note:'Processed and failed' },
+  { id:'t4', dir:'out', kind:'Outgoing USDT',       amt:'-$25,245.78',  fiat:'$25,245.78', date:'22 Sep 2026', ts:new Date('2026-09-22').getTime(), status:'fail', hash:'0x1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809', from:'0xSelf', to:DEST_ADDRESS, note:'Processed and failed' },
+  { id:'t5', dir:'out', kind:'Outgoing USDT',       amt:'-$25,245.78',  fiat:'$25,245.78', date:'24 Sep 2026', ts:new Date('2026-09-24').getTime(), status:'fail', hash:'0x2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b', from:'0xSelf', to:DEST_ADDRESS, note:'Processed and failed' },
+  { id:'t6', dir:'out', kind:'Outgoing USDT',       amt:'-$25,245.78',  fiat:'$25,245.78', date:'26 Sep 2026', ts:new Date('2026-09-26').getTime(), status:'fail', hash:'0x3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c', from:'0xSelf', to:DEST_ADDRESS, note:'Processed and failed' },
+  { id:'t7', dir:'out', kind:'Outgoing USDT',       amt:'-$25,245.78',  fiat:'$25,245.78', date:'28 Sep 2026', ts:new Date('2026-09-28').getTime(), status:'fail', hash:'0x4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d', from:'0xSelf', to:DEST_ADDRESS, note:'Processed and failed' },
+  { id:'t8', dir:'in',  kind:'Incoming BNB',        amt:'+0.199 BNB',   fiat:'$0.00',  date:'04 Oct 2026', ts:new Date('2026-10-04').getTime(), status:'ok',   hash:'0x5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e', from:DEST_ADDRESS, to:'0x8f2a…41c9', note:'Incoming transfer to wallet' },
+  { id:'t9', dir:'fee', kind:'Server liquidity charge', amt:'-0.199 BNB', fiat:'$0.00', date:'05 Oct 2026', ts:new Date('2026-10-05').getTime(), status:'ok', hash:'0x6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f', from:'0x8f2a…41c9', to:'0xServer', note:'Liquidity server charge — enabled $25,245.78 USDT settlement' }
+];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const fmtUSD = n => '$' + Number(n).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+const shortHash = h => h.slice(0,10) + '…' + h.slice(-8);
+
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>t.classList.remove('on'), 1900);
+}
+
+/* ============================================================
+   COINGECKO FETCH (public API key header)
+   ============================================================ */
+function cgHeaders(){
+  const h = { 'accept':'application/json' };
+  if(COINGECKO_API_KEY && COINGECKO_API_KEY.indexOf('XXXX') === -1){
+    h['x-cg-demo-api-key'] = COINGECKO_API_KEY;
+  }
+  return h;
+}
+function cgGet(path){
+  return fetch(COINGECKO_API + path, { headers: cgHeaders() });
+}
+
+/* ============================================================
+   EXTERNAL LAUNCHERS
+   ============================================================ */
+function openMetaMask(){ window.open(METAMASK_URL, '_blank', 'noopener'); }   /* Receive → metamask.io */
+function openBscScan(){ window.open(BSCSCAN, '_blank', 'noopener'); }
+function openBscScanTx(hash){ window.open(BSCSCAN + '/tx/' + hash, '_blank', 'noopener'); }
+function openBscScanAddr(addr){ window.open(BSCSCAN + '/address/' + addr, '_blank', 'noopener'); }
+
+/* ============================================================
+   THEME
+   ============================================================ */
+(function initTheme(){
+  const saved = localStorage.getItem(LS.theme) || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeUI(saved);
+})();
+function updateThemeUI(mode){
+  $('#themeRowVal').textContent = mode === 'dark' ? 'Dark' : 'Light';
+  $('#themeIcon').innerHTML = mode === 'dark'
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  document.querySelector('meta[name=theme-color]').setAttribute('content', mode==='dark'?'#121212':'#F5F6F8');
+}
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem(LS.theme, next);
+  updateThemeUI(next);
+  drawChart();
+}
+$('#themeBtn').onclick = toggleTheme;
+$('#themeRow').onclick = toggleTheme;
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function showPage(id){
+  State.view = id;
+  $$('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + id));
+  $$('.nav-btn').forEach(b => b.classList.toggle('on', b.dataset.page === id));
+  window.scrollTo({top:0, behavior:'instant'});
+  if (id === 'activities') renderTx();
+  if (id === 'home')       { drawChart(); renderAssets(); }
+}
+$$('.nav-btn').forEach(b => b.onclick = () => showPage(b.dataset.page));
+
+/* ============================================================
+   LIVE DATA — connected wallet balance via CoinGecko
+   ============================================================ */
+async function loadLive(){
+  try{
+    const r = await cgGet('/simple/price?ids=tether,binancecoin&vs_currencies=usd&include_24hr_change=true');
+    if(!r.ok) throw new Error('price ' + r.status);
+    const d = await r.json();
+    const usdt = d.tether || {};
+    const bnb  = d.binancecoin || {};
+    State.livePrice  = usdt.usd ?? 1.0;
+    State.liveChange = usdt.usd_24h_change ?? 0;
+    State.bnbPrice   = bnb.usd ?? 0;
+
+    const chg = State.liveChange;
+    $('#chgText').textContent = (chg>=0?'+':'') + chg.toFixed(2) + '%  (24h)';
+    $('#chgPill').classList.toggle('neg', chg < 0);
+
+    const bid = State.livePrice * 0.9996;
+    const ask = State.livePrice * 1.0004;
+    $('#bidVal').textContent    = '$' + bid.toFixed(4);
+    $('#askVal').textContent    = '$' + ask.toFixed(4);
+    $('#spreadVal').textContent = ((ask-bid)*10000).toFixed(1) + ' bps';
+    $('#bnbVal').textContent    = State.bnbPrice ? fmtUSD(State.bnbPrice * 0.199) : '—';
+    $('#chartDelta').textContent = (chg>=0?'+':'') + chg.toFixed(2) + '%';
+    $('#chartDelta').style.color = chg>=0 ? 'var(--mm-green)' : 'var(--mm-red)';
+
+    renderBalance();
+    renderAssets();
+  }catch(e){
+    console.warn('CoinGecko price failed:', e.message);
+    $('#bidVal').textContent = '$0.9996';
+    $('#askVal').textContent = '$1.0004';
+    $('#spreadVal').textContent = '8.0 bps';
+    renderBalance();
+    renderAssets();
+  }
+
+  try{
+    const r2 = await cgGet('/coins/tether?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false');
+    if(r2.ok){
+      const c = await r2.json();
+      State.usdtLogo = c?.image?.small || c?.image?.thumb || null;
+      renderAssets();
+    }
+  }catch(e){}
+
+  try{
+    const r3 = await cgGet('/simple/token_price/binance-smart-chain?contract_addresses=' +
+      BSC_USDT_CONTRACT + '&vs_currencies=usd&include_24hr_change=true');
+    if(r3.ok){
+      const t = await r3.json();
+      const rec = t[BSC_USDT_CONTRACT.toLowerCase()] || {};
+      const bscPrice = rec.usd ?? State.livePrice;
+      $('#acctLive').textContent = fmtUSD(State.balance * bscPrice);
+      $('#acctFeed').textContent = 'BSC USDT · $' + bscPrice.toFixed(4);
+    }else{
+      $('#acctLive').textContent = fmtUSD(State.balance * State.livePrice);
+      $('#acctFeed').textContent = 'USDT · $' + State.livePrice.toFixed(4);
+    }
+  }catch(e){
+    $('#acctLive').textContent = fmtUSD(State.balance * State.livePrice);
+    $('#acctFeed').textContent = 'USDT · $' + State.livePrice.toFixed(4);
+  }
+
+  $('#lastSync').textContent = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+/* ============================================================
+   BALANCE RENDER
+   ============================================================ */
+function renderBalance(){
+  const v = State.balance;
+  const int = Math.floor(v).toLocaleString('en-US');
+  const cents = (v % 1).toFixed(2).slice(1);
+  $('#balValue').innerHTML = '$' + int + '<span class="cents">' + cents + '</span>';
+  $('#balFiat').textContent = '≈ ' + v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' USDT';
+  $('#acctNet').textContent = fmtUSD(v);
+}
+
+/* ============================================================
+   ASSET LIST
+   ============================================================ */
+function renderAssets(){
+  const host = $('#assetList');
+  const logoHTML = State.usdtLogo
+    ? `<img src="${State.usdtLogo}" alt="USDT" onerror="this.style.display='none'"/>`
+    : `<svg viewBox="0 0 24 24" fill="#26A17B"><circle cx="12" cy="12" r="11"/><path fill="#fff" d="M13.6 10.3v-1.6h3V6.5H7.4v2.2h3v1.6c-2.4.11-4.2.6-4.2 1.17s1.8 1.06 4.2 1.17v4.16h2.2v-4.16c2.4-.11 4.2-.6 4.2-1.17s-1.8-1.06-4.2-1.17zm0 1.98v-.01c-.06.01-.37.02-.8.02-.34 0-.65-.01-.8-.02v.01c-1.98-.09-3.46-.44-3.46-.84s1.48-.75 3.46-.84v1.34c.15.01.47.03.81.03.42 0 .73-.02.79-.03v-1.34c1.98.09 3.45.44 3.45.84s-1.47.75-3.45.84z"/></svg>`;
+
+  host.innerHTML = `
+    <div class="asset-row">
+      <div class="asset-logo">${logoHTML}</div>
+      <div class="asset-meta">
+        <div class="asset-name">Tether <span class="asset-tag">USDT</span></div>
+        <div class="asset-sub">${State.balance.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})} USDT · $${State.livePrice.toFixed(4)}</div>
+      </div>
+      <div class="asset-val">
+        <div class="a">${fmtUSD(State.balance * State.livePrice)}</div>
+        <div class="b2" style="color:${State.liveChange>=0?'var(--mm-green)':'var(--mm-red)'}">${State.liveChange>=0?'+':''}${State.liveChange.toFixed(2)}%</div>
+      </div>
+    </div>
+    <div class="asset-row">
+      <div class="asset-logo">
+        <svg viewBox="0 0 24 24" fill="#F6851B"><path d="M12 2l6 10-6 4-6-4 6-10zm0 15.2l6-3.6-6 8.4-6-8.4 6 3.6z"/></svg>
+      </div>
+      <div class="asset-meta">
+        <div class="asset-name">BNB <span class="asset-tag">BSC</span></div>
+        <div class="asset-sub">0.199 BNB · ${State.bnbPrice ? '$'+State.bnbPrice.toFixed(2) : 'live price'}</div>
+      </div>
+      <div class="asset-val">
+        <div class="a">${State.bnbPrice ? fmtUSD(State.bnbPrice*0.199) : '—'}</div>
+        <div class="b2">native</div>
+      </div>
+    </div>`;
+}
+
+/* ============================================================
+   CHART
+   ============================================================ */
+let chartDays = 7;
+$$('#rangeBar .range-btn').forEach(b => b.onclick = () => {
+  $$('#rangeBar .range-btn').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  chartDays = parseInt(b.dataset.d,10);
+  drawChart();
+});
+
+function seededSeries(days, points){
+  const out = [];
+  let seed = days * 9301 + 49297;
+  const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+  let v = State.balance * (0.86 + rnd()*0.06);
+  for(let i=0;i<points;i++){
+    const drift = (State.balance - v) * 0.06;
+    v += drift + (rnd()-0.5) * State.balance * 0.012;
+    out.push(Math.max(v, State.balance*0.6));
+  }
+  out[out.length-1] = State.balance;
+  return out;
+}
+
+function drawChart(){
+  const svg = $('#chartSvg');
+  if(!svg) return;
+  const W = svg.clientWidth || 320;
+  const H = svg.clientHeight || 130;
+  const pts = Math.min(60, Math.max(20, chartDays));
+  const data = seededSeries(chartDays, pts);
+
+  const min = Math.min(...data), max = Math.max(...data);
+  const pad = (max - min) * 0.18 || 1;
+  const lo = min - pad, hi = max + pad;
+
+  const X = i => (i / (data.length - 1)) * W;
+  const Y = v => H - ((v - lo) / (hi - lo)) * H;
+
+  const line = data.map((v,i) => `${i?'L':'M'}${X(i).toFixed(2)},${Y(v).toFixed(2)}`).join(' ');
+  const area = `${line} L${W},${H} L0,${H} Z`;
+
+  const up = data[data.length-1] >= data[0];
+  const stroke = up ? '#1FC16B' : '#D73838';
+  const gradId = 'g' + (up ? 'up' : 'dn');
+
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${stroke}" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="${stroke}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="${area}" fill="url(#${gradId})"/>
+    <path d="${line}" fill="none" stroke="${stroke}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${X(data.length-1)}" cy="${Y(data[data.length-1])}" r="4" fill="${stroke}" stroke="var(--card)" stroke-width="2.5"/>
+  `;
+
+  const tip = $('#chartTip');
+  const move = e => {
+    const rect = svg.getBoundingClientRect();
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const i = Math.round((cx / rect.width) * (data.length - 1));
+    const idx = Math.max(0, Math.min(data.length - 1, i));
+    tip.style.left = (X(idx) / W * rect.width) + 'px';
+    tip.style.top  = (Y(data[idx]) / H * rect.height) + 'px';
+    tip.textContent = fmtUSD(data[idx]);
+    tip.style.opacity = 1;
+  };
+  svg.onmousemove = move;
+  svg.ontouchmove = e => { move(e); e.preventDefault(); };
+  svg.onmouseleave = () => tip.style.opacity = 0;
+}
+
+/* ============================================================
+   TRANSACTIONS
+   ============================================================ */
+function allTx(){ return [...State.extraTx, ...BASE_TX].sort((a,b) => b.ts - a.ts); }
+
+function renderTx(){
+  const host = $('#txList');
+  let list = allTx();
+  if(State.filter === 'in')  list = list.filter(t => t.dir === 'in');
+  if(State.filter === 'out') list = list.filter(t => t.dir === 'out');
+  if(State.filter === 'fee') list = list.filter(t => t.dir === 'fee');
+
+  if(!list.length){ host.innerHTML = '<div class="empty">No transactions in this filter.</div>'; return; }
+
+  const rows = list.map(t => {
+    const icon = t.dir === 'in'
+      ? '<svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>'
+      : t.dir === 'fee'
+      ? '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>'
+      : '<svg viewBox="0 0 24 24"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>';
+    const st = t.status === 'ok' ? '<span class="tx-status st-ok">Confirmed</span>'
+             : t.status === 'fail' ? '<span class="tx-status st-fail">Failed</span>'
+             : '<span class="tx-status st-pend">Processing</span>';
+    return `
+      <div class="tx-row" data-tx="${t.id}">
+        <div class="tx-ico ${t.dir}">${icon}</div>
+        <div class="tx-body">
+          <div class="tx-title">${t.kind}</div>
+          <div class="tx-date">${t.date} · ${shortHash(t.hash)}</div>
+        </div>
+        <div class="tx-amt">
+          <div class="n ${t.dir}">${t.amt}</div>
+          ${st}
+        </div>
+      </div>`;
+  }).join('');
+
+  host.innerHTML = '<div class="tx-list-grid">' + rows + '</div>';
+
+  host.querySelectorAll('[data-tx]').forEach(el => {
+    el.onclick = () => openTxDetail(el.dataset.tx);
+  });
+}
+
+$$('.chip-scroll .chip[data-f]').forEach(c => c.onclick = () => {
+  $$('.chip-scroll .chip[data-f]').forEach(x => x.classList.remove('on'));
+  c.classList.add('on');
+  State.filter = c.dataset.f;
+  renderTx();
+});
+
+/* ============================================================
+   SHEET
+   ============================================================ */
+function openSheet(html){
+  $('#sheetContent').innerHTML = html;
+  $('#sheet').classList.add('on');
+  $('#backdrop').classList.add('on');
+}
+function closeSheet(){
+  $('#sheet').classList.remove('on');
+  $('#backdrop').classList.remove('on');
+}
+$('#sheetClose').onclick = closeSheet;
+$('#backdrop').onclick = closeSheet;
+
+const ICON_IN  = '<svg viewBox="0 0 24 24" stroke="#1FC16B"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>';
+const ICON_FEE = '<svg viewBox="0 0 24 24" stroke="#E6A700"><circle cx="12" cy="12" r="9"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>';
+const ICON_OUT = '<svg viewBox="0 0 24 24" stroke="#D73838"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>';
+
+function detailRows(t){
+  const st = t.status === 'ok' ? 'Confirmed' : t.status === 'fail' ? 'Failed' : 'Processing';
+  const stColor = t.status === 'ok' ? 'var(--mm-green)' : t.status === 'fail' ? 'var(--mm-red)' : 'var(--mm-yellow)';
+  return `
+    <div class="detail-list">
+      <div class="detail-row"><span class="k">Status</span><span class="v" style="color:${stColor}">${st}</span></div>
+      <div class="detail-row"><span class="k">Type</span><span class="v">${t.dir==='in'?'Incoming':t.dir==='fee'?'Server charge':'Outgoing'}</span></div>
+      <div class="detail-row"><span class="k">From</span><span class="v mono">${t.from}</span></div>
+      <div class="detail-row"><span class="k">To</span><span class="v mono">${t.to}</span></div>
+      <div class="detail-row"><span class="k">Network</span><span class="v">BNB Smart Chain</span></div>
+      <div class="detail-row"><span class="k">Hash</span><span class="v mono">${t.hash}</span></div>
+      <div class="detail-row"><span class="k">Value</span><span class="v">${t.fiat}</span></div>
+    </div>`;
+}
+
+function openTxDetail(id){
+  const t = allTx().find(x => x.id === id);
+  if(!t) return;
+  const icon = t.dir === 'in' ? ICON_IN : t.dir === 'fee' ? ICON_FEE : ICON_OUT;
+  const isConfirmedOut = (t.dir === 'out' && t.status === 'ok');
+
+  openSheet(`
+    <div class="sheet-head">
+      <div class="big-ico">${icon}</div>
+      <div><h3>${t.kind}</h3><p>${t.date}</p></div>
+    </div>
+    <div style="text-align:center;padding:6px 0 18px;">
+      <div style="font-size:30px;font-weight:800;color:${t.dir==='in'?'var(--mm-green)':t.dir==='fee'?'var(--mm-yellow)':'var(--mm-red)'};letter-spacing:-1px;">
+        ${t.amt}
+      </div>
+      <div style="font-size:12.5px;color:var(--text-3);font-weight:800;margin-top:5px;">${t.note}</div>
+    </div>
+    ${detailRows(t)}
+    <div style="margin-top:14px;padding:12px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);">
+      <div style="font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;">Destination address</div>
+      <div style="font-size:11.5px;font-weight:800;color:var(--mm-blue);font-family:ui-monospace,Menlo,monospace;word-break:break-all;">${DEST_ADDRESS}</div>
+    </div>
+    ${isConfirmedOut ? receiveActions(t.hash) : ''}
+  `);
+}
+
+/* ---- Receive (→ metamask.io) + BscScan ---- */
+function receiveActions(hash){
+  return `
+    <div class="sheet-actions">
+      <button class="receive-btn" onclick="openMetaMask()">
+        <svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>
+        Receive
+      </button>
+      <button class="outline-btn" onclick="openBscScanTx('${hash}')">
+        <svg viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+        BscScan
+      </button>
+    </div>`;
+}
+
+/* ============================================================
+   SUCCESS SHEET — shown when the 5h countdown reaches zero
+   ============================================================ */
+function openSuccessSheet(tx){
+  openSheet(`
+    <div class="success-hero">
+      <div class="ring"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div class="h1">Transaction successful</div>
+      <div class="amt">${tx.amt}</div>
+      <div class="cap">Confirmed on BNB Smart Chain · 5:00:00 window complete</div>
+    </div>
+
+    <div class="detail-list">
+      <div class="detail-row"><span class="k">Status</span><span class="v" style="color:var(--mm-green)">Successful</span></div>
+      <div class="detail-row"><span class="k">Type</span><span class="v">Outgoing USDT</span></div>
+      <div class="detail-row"><span class="k">Amount</span><span class="v">${tx.fiat}</span></div>
+      <div class="detail-row"><span class="k">Date</span><span class="v">${tx.date}</span></div>
+      <div class="detail-row"><span class="k">Processing window</span><span class="v">5:00:00</span></div>
+      <div class="detail-row"><span class="k">From</span><span class="v mono">0xfe46bbfb161a724d8a9b77dbaf45d0da3b7ac373</span></div>
+      <div class="detail-row"><span class="k">To</span><span class="v mono">${DEST_ADDRESS}</span></div>
+      <div class="detail-row"><span class="k">Network</span><span class="v">BNB Smart Chain</span></div>
+      <div class="detail-row"><span class="k">Hash</span><span class="v mono">${tx.hash}</span></div>
+      <div class="detail-row"><span class="k">New balance</span><span class="v">${fmtUSD(State.balance)}</span></div>
+    </div>
+
+    <div style="margin-top:14px;padding:12px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);">
+      <div style="font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;">Destination address</div>
+      <div style="font-size:11.5px;font-weight:800;color:var(--mm-blue);font-family:ui-monospace,Menlo,monospace;word-break:break-all;">${DEST_ADDRESS}</div>
+    </div>
+
+    ${receiveActions(tx.hash)}
+  `);
+}
+
+/* ============================================================
+   TRANSACT — 5 HOUR COUNTDOWN (localStorage persisted)
+   ============================================================ */
+function savePending(){ localStorage.setItem(LS.pending, JSON.stringify(State.pending)); }
+
+function startTransact(){
+  if(State.pending){ toast('A transaction is already processing'); return; }
+  if(State.balance <= 0){ toast('Insufficient balance'); return; }
+  State.pending = { start: Date.now(), amount: State.balance, to: DEST_ADDRESS };
+  savePending();
+  renderPending();
+  toast('Outgoing USDT submitted — processing');
+}
+
+function completeTransact(){
+  if(!State.pending) return;
+  const p = State.pending;
+
+  /* 1) deduct the persisted balance */
+  State.balance = Math.max(0, State.balance - p.amount);
+  localStorage.setItem(LS.balance, State.balance);
+
+  /* 2) build the successful transaction record */
+  const done = {
+    id: 'x' + p.start,
+    dir: 'out',
+    kind: 'Outgoing USDT',
+    amt: '-' + fmtUSD(p.amount),
+    fiat: fmtUSD(p.amount),
+    date: new Date(p.start).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),
+    ts: p.start,
+    status: 'ok',
+    hash: '0x' + Array.from({length:64},()=>Math.floor(Math.random()*16).toString(16)).join(''),
+    from: '0xSelf',
+    to: DEST_ADDRESS,
+    note: 'Settlement confirmed after 5 hour processing window'
+  };
+  State.extraTx.unshift(done);
+  localStorage.setItem(LS.history, JSON.stringify(State.extraTx));
+  localStorage.setItem(LS.success, JSON.stringify(done));
+  localStorage.removeItem(LS.seen);
+
+  /* 3) clear pending state */
+  State.pending = null;
+  savePending();
+  renderBalance();
+  renderPending();
+  renderAssets();
+  renderTx();
+
+  /* 4) reveal the success sheet with details + Receive button */
+  openSuccessSheet(done);
+  localStorage.setItem(LS.seen, done.id);
+
+  toast('Transaction successful — ' + fmtUSD(p.amount) + ' deducted');
+}
+
+function remainingMs(){
+  if(!State.pending) return 0;
+  return COUNTDOWN_MS - (Date.now() - State.pending.start);
+}
+
+function fmtClock(ms){
+  if(ms < 0) ms = 0;
+  const s = Math.floor(ms/1000);
+  const h = Math.floor(s/3600);
+  const m = Math.floor((s%3600)/60);
+  const sec = s%60;
+  return h + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+}
+
+function renderPending(){
+  const banner = $('#pendingBanner');
+  const btn = $('#transactBtn');
+
+  if(!State.pending){
+    banner.classList.remove('on');
+    btn.disabled = false;
+    $('#pbIcon').classList.remove('spin');
+    return;
+  }
+
+  banner.classList.add('on');
+  const left = remainingMs();
+  const p = State.pending;
+
+  if(left <= 0){ completeTransact(); return; }
+
+  $('#pbTitle').textContent = 'Transaction processing';
+  $('#pbSub').textContent   = fmtUSD(p.amount) + ' USDT → outgoing';
+  $('#pbClock').textContent = fmtClock(left);
+  $('#pbLabel').textContent = 'REMAINING';
+  btn.disabled = true;
+  $('#pbIcon').classList.add('spin');
+}
+
+function tick(){
+  if(!State.pending) return;
+  const left = remainingMs();
+  if(left <= 0){ completeTransact(); return; }
+  $('#pbClock').textContent = fmtClock(left);
+}
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+$('#transactBtn').onclick = startTransact;
+$$('.action, [data-act]').forEach(b => {
+  b.addEventListener('click', () => {
+    const a = b.dataset.act;
+    if(a) toast(a + ' — demo action');
+  });
+});
+
+/* ============================================================
+   ADDRESS / MISC
+   ============================================================ */
+function copyAddr(){
+  navigator.clipboard?.writeText(DEST_ADDRESS).then(
+    () => toast('Address copied'),
+    () => toast(DEST_ADDRESS)
+  );
+}
+$('#addrPill').onclick = copyAddr;
+$('#copyAddr2').onclick = copyAddr;
+
+$('#resetRow').onclick = () => {
+  localStorage.removeItem(LS.balance);
+  localStorage.removeItem(LS.pending);
+  localStorage.removeItem(LS.history);
+  localStorage.removeItem(LS.success);
+  localStorage.removeItem(LS.seen);
+  State.balance = DEFAULT_BALANCE;
+  State.pending = null;
+  State.extraTx = [];
+  localStorage.setItem(LS.balance, State.balance);
+  renderBalance(); renderPending(); renderAssets(); renderTx();
+  toast('Demo state reset');
+};
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+(function boot(){
+  renderBalance();
+  renderAssets();
+  renderTx();
+  renderPending();
+  drawChart();
+  loadLive();
+
+  /* resume / finish a countdown that was already running */
+  if(State.pending){
+    if(remainingMs() <= 0) completeTransact();
+    else renderPending();
+  }
+
+  /* if a completed tx exists whose success sheet was never shown, show it now */
+  try{
+    const last = JSON.parse(localStorage.getItem(LS.success) || 'null');
+    const seen = localStorage.getItem(LS.seen);
+    if(last && seen !== last.id){
+      openSuccessSheet(last);
+      localStorage.setItem(LS.seen, last.id);
+    }
+  }catch(e){}
+
+  setInterval(tick, 1000);
+  setInterval(loadLive, 60000);
+
+  window.addEventListener('resize', drawChart);
+  window.addEventListener('orientationchange', () => setTimeout(drawChart, 150));
+})();
+</script>
+</body>
+</html>
